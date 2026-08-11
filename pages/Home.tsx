@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase';
 import { 
   ArrowRight, ShieldCheck, Layers, Globe, ArrowUpRight, 
   Hammer, ScanLine, Thermometer, FileCheck, 
-  BookOpen, Clock, Plus, ChevronDown 
+  BookOpen, Clock, Plus 
 } from 'lucide-react';
 import { 
   motion, useScroll, useTransform, useSpring, AnimatePresence, 
@@ -74,6 +74,7 @@ const homeFaqSchema = JSON.stringify({
         "@type": "Answer",
         "text": "Self-drilling screws (TEK screws) have a drill-point tip to create their own hole in metal. Self-tapping screws tap their own threads but usually require a pre-drilled pilot hole."
       }
+
     }
 ]
 });
@@ -103,12 +104,6 @@ interface FAQItemProps {
   isOpen: boolean;
   onClick: () => void;
 }
-
-const FullScreenSection = ({ id, children, className = "" }: { id: string; children: React.ReactNode; className?: string }) => (
-  <section id={id} className={`snap-start min-h-screen w-full relative flex flex-col justify-center overflow-hidden ${className}`}>
-    <div className="w-full py-12 md:py-8" style={{ position: 'relative' }}>{children}</div>
-  </section>
-);
 
 const SectionReveal: React.FC<SectionRevealProps> = ({ children, delay = 0 }) => (
   <motion.div
@@ -294,7 +289,7 @@ const AnimatedManifesto = () => {
     { text: "precision.", className: "font-serif italic font-normal text-white/70" }
   ];
   return (
-    <FullScreenSection id="manifesto" className="bg-neutral-900">
+    <section className="py-40 bg-neutral-900 text-white rounded-[3rem] relative z-30 min-h-[60vh] flex items-center justify-center border border-white/5">
       <div className="container mx-auto px-6">
         <motion.span initial={{ opacity: 0 }} animate={isInView ? { opacity: 1 } : {}} className="text-yellow-500 font-black tracking-widest uppercase block mb-12 text-center text-sm">Company Manifesto</motion.span>
         <motion.p ref={ref} className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[1.1] max-w-5xl mx-auto text-center flex flex-wrap justify-center gap-x-3 gap-y-2">
@@ -305,10 +300,13 @@ const AnimatedManifesto = () => {
           ))}
         </motion.p>
       </div>
-    </FullScreenSection>
+    </section>
   );
 };
 
+// =========================================
+// MAIN HOME COMPONENT
+// =========================================
 const Home: React.FC = () => {
   const [blogs, setBlogs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -426,20 +424,11 @@ const Home: React.FC = () => {
         {isLoading && <IntroLoader onComplete={() => setIsLoading(false)} />}
       </AnimatePresence>
 
-      <style dangerouslySetInnerHTML={{ __html: `
-        * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; box-sizing: border-box; }
-        html, body { height: 100%; margin: 0; overflow: hidden; }
-        .scroll-snap-type-y-mandatory { scroll-snap-type: y mandatory; }
-        .snap-start { scroll-snap-align: start; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0A0A0F; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 4px; }
-      `}} />
-
-      <main ref={containerRef} className="h-screen overflow-y-auto scroll-snap-type-y-mandatory bg-[#050505] text-white selection:bg-yellow-500 selection:text-black overflow-x-hidden m-0 p-0 -mt-28 md:-mt-36">
+      {/* Added -mt-28 md:-mt-36 to nullify external parent top padding gaps completely */}
+      <main ref={containerRef} className="bg-[#050505] text-white selection:bg-yellow-500 selection:text-black overflow-hidden m-0 p-0 -mt-28 md:-mt-36">
         
         {/* HERO SECTION */}
-        <FullScreenSection id="hero" className="relative">
+        <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-36 md:pt-44 pb-20 px-4 md:px-6">
           <motion.div style={{ y: heroY, scale: 1.1, rotate }} className="absolute inset-0 z-0 h-full w-full">
             <AnimatePresence mode="popLayout">
                 <motion.img 
@@ -457,7 +446,7 @@ const Home: React.FC = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-[#050505] z-10" />
           </motion.div>
           
-          <div className="container relative z-20 mx-auto px-4 md:px-6 pt-36 md:pt-44 pb-20">
+          <div className="container relative z-20 mx-auto">
             <div className="flex flex-col items-center text-center">
               {!isLoading && (
                 <>
@@ -478,156 +467,147 @@ const Home: React.FC = () => {
               )}
             </div>
           </div>
-
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 cursor-pointer z-20 group" onClick={() => document.getElementById('stats')?.scrollIntoView({ behavior: 'smooth' })}>
-            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest group-hover:text-white transition-colors">Scroll</span>
-            <ChevronDown className="w-4 h-4 text-slate-400 animate-bounce group-hover:text-white" />
-          </div>
-        </FullScreenSection>
+        </section>
 
         {/* BENTO STATS */}
-        <FullScreenSection id="stats" className="relative">
-          <div className="px-6 max-w-7xl mx-auto w-full">
-            <SectionReveal>
-              <div className="mb-12">
-                 <h2 className="text-3xl md:text-4xl font-bold">Engineering <span className="text-yellow-500">Excellence</span></h2>
-                 <p className="text-neutral-400">Durable Fasteners Pvt Ltd by the numbers.</p>
-              </div>
-            </SectionReveal>
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-              <div className="md:col-span-8">
-                <SpotlightCard className="p-12 h-full bg-neutral-900/80">
-                  <div className="flex justify-between items-start mb-20"><Globe className="w-8 h-8 text-yellow-500" /><ArrowUpRight className="text-neutral-600" /></div>
-                  <h3 className="text-7xl md:text-8xl font-black tracking-tighter"><Counter value={stats.dealers} />+</h3>
-                  <p className="text-yellow-200/80 font-bold tracking-widest uppercase">GLOBAL STRATEGIC DEALERS</p>
-                </SpotlightCard>
-              </div>
-              <div className="md:col-span-4 flex flex-col gap-6">
-                <motion.div whileHover={{ scale: 1.02 }} className="bg-yellow-500 p-8 rounded-[2rem] flex-1">
-                  <ShieldCheck className="w-8 h-8 text-black mb-4" />
-                  <h3 className="text-5xl font-bold text-black"><Counter value={stats.years} />+</h3>
-                  <p className="text-black/70 font-black text-xs uppercase">Years Mastery</p>
-                </motion.div>
-                <SpotlightCard className="p-8 flex-1">
-                  <Layers className="w-8 h-8 text-neutral-400 mb-4" />
-                  <h3 className="text-5xl font-bold text-white"><Counter value={stats.products} />+</h3>
-                  <p className="text-neutral-400 font-bold text-xs uppercase">SKU High Tensile</p>
-                </SpotlightCard>
-              </div>
+        <section className="py-24 px-6 max-w-7xl mx-auto">
+          <SectionReveal>
+            <div className="mb-12">
+               <h2 className="text-3xl md:text-4xl font-bold">Engineering <span className="text-yellow-500">Excellence</span></h2>
+               <p className="text-neutral-400">Durable Fasteners Pvt Ltd by the numbers.</p>
+            </div>
+          </SectionReveal>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div className="md:col-span-8">
+              <SpotlightCard className="p-12 h-full bg-neutral-900/80">
+                <div className="flex justify-between items-start mb-20"><Globe className="w-8 h-8 text-yellow-500" /><ArrowUpRight className="text-neutral-600" /></div>
+                <h3 className="text-7xl md:text-8xl font-black tracking-tighter"><Counter value={stats.dealers} />+</h3>
+                <p className="text-yellow-200/80 font-bold tracking-widest uppercase">GLOBAL STRATEGIC DEALERS</p>
+              </SpotlightCard>
+            </div>
+            <div className="md:col-span-4 flex flex-col gap-6">
+              <motion.div whileHover={{ scale: 1.02 }} className="bg-yellow-500 p-8 rounded-[2rem] flex-1">
+                <ShieldCheck className="w-8 h-8 text-black mb-4" />
+                <h3 className="text-5xl font-bold text-black"><Counter value={stats.years} />+</h3>
+                <p className="text-black/70 font-black text-xs uppercase">Years Mastery</p>
+              </motion.div>
+              <SpotlightCard className="p-8 flex-1">
+                <Layers className="w-8 h-8 text-neutral-400 mb-4" />
+                <h3 className="text-5xl font-bold text-white"><Counter value={stats.products} />+</h3>
+                <p className="text-neutral-400 font-bold text-xs uppercase">SKU High Tensile</p>
+              </SpotlightCard>
             </div>
           </div>
-        </FullScreenSection>
+        </section>
 
         <AnimatedManifesto />
 
         {/* PRODUCTS */}
-        <FullScreenSection id="products" className="relative">
-          <div className="px-6 container mx-auto">
-            <div className="flex justify-between items-end mb-20 flex-wrap gap-6">
-              <div>
-                <div className="flex items-center gap-3 mb-5">
-                  <span className="h-px w-10 bg-yellow-500" />
-                  <span className="text-yellow-500 font-mono text-[10px] uppercase tracking-[0.35em] font-bold">
-                    Product Divisions
-                  </span>
-                </div>
-                <h2 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.88]">
-                  The Core<br />Portfolio
-                </h2>
-              </div>
-              <Link
-                to="/products"
-                className="hidden md:flex items-center gap-4 text-yellow-500 font-bold group uppercase tracking-widest text-xs"
-              >
-                Browse All Products
-                <div className="w-12 h-12 rounded-full border border-yellow-500 flex items-center justify-center group-hover:bg-yellow-500 group-hover:text-black transition-all">
-                  <ArrowRight size={20} />
-                </div>
-              </Link>
-            </div>
+       <section className="py-40 px-6 container mx-auto">
+         <div className="flex justify-between items-end mb-20 flex-wrap gap-6">
+           <div>
+             <div className="flex items-center gap-3 mb-5">
+               <span className="h-px w-10 bg-yellow-500" />
+               <span className="text-yellow-500 font-mono text-[10px] uppercase tracking-[0.35em] font-bold">
+                 Product Divisions
+               </span>
+             </div>
+             <h2 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.88]">
+               The Core<br />Portfolio
+             </h2>
+           </div>
+           <Link
+             to="/products"
+             className="hidden md:flex items-center gap-4 text-yellow-500 font-bold group uppercase tracking-widest text-xs"
+           >
+             Browse All Products
+             <div className="w-12 h-12 rounded-full border border-yellow-500 flex items-center justify-center group-hover:bg-yellow-500 group-hover:text-black transition-all">
+               <ArrowRight size={20} />
+             </div>
+           </Link>
+         </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {productDivisions.map((division, index) => {
-                const isFastener = division.name.toLowerCase().includes('fastener') || division.name.toLowerCase().includes('screw');
-                const cardImage = isFastener ? categoryImages.fasteners : categoryImages.fittings;
-                return (
-                  <motion.div
-                    key={division.name}
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-80px" }}
-                    transition={{ duration: 0.7, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                    className="group relative rounded-[2rem] overflow-hidden border border-white/5 bg-neutral-900 flex flex-col"
-                  >
-                    <div className="relative h-[220px] md:h-[260px] overflow-hidden flex-shrink-0">
-                      {cardImage ? (
-                        <img
-                          src={cardImage}
-                          alt={division.name}
-                          className="w-full h-full object-cover grayscale-[0.3] brightness-75 transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105 group-hover:brightness-85"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-neutral-800 to-neutral-950 flex items-center justify-center">
-                          <span className="text-white/10 text-8xl font-black">0{index + 1}</span>
-                        </div>
-                      )}
-                      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-neutral-900 to-transparent" />
-                      <div className="absolute top-5 left-5 bg-black/60 backdrop-blur-sm border border-yellow-500/30 text-yellow-500 text-[9px] font-black uppercase tracking-[0.25em] px-3 py-1.5 rounded-full">
-                        {division.name} Segment
-                      </div>
-                      <div className="absolute top-5 right-5 bg-black/60 backdrop-blur-sm border border-white/10 text-white/70 text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">
-                        {division.count} Products
-                      </div>
-                    </div>
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           {productDivisions.map((division, index) => {
+             const isFastener = division.name.toLowerCase().includes('fastener') || division.name.toLowerCase().includes('screw');
+             const cardImage = isFastener ? categoryImages.fasteners : categoryImages.fittings;
+             return (
+               <motion.div
+                 key={division.name}
+                 initial={{ opacity: 0, y: 40 }}
+                 whileInView={{ opacity: 1, y: 0 }}
+                 viewport={{ once: true, margin: "-80px" }}
+                 transition={{ duration: 0.7, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                 className="group relative rounded-[2rem] overflow-hidden border border-white/5 bg-neutral-900 flex flex-col"
+               >
+                 <div className="relative h-[260px] md:h-[300px] overflow-hidden flex-shrink-0">
+                   {cardImage ? (
+                     <img
+                       src={cardImage}
+                       alt={division.name}
+                       className="w-full h-full object-cover grayscale-[0.3] brightness-75 transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105 group-hover:brightness-85"
+                     />
+                   ) : (
+                     <div className="w-full h-full bg-gradient-to-br from-neutral-800 to-neutral-950 flex items-center justify-center">
+                       <span className="text-white/10 text-8xl font-black">0{index + 1}</span>
+                     </div>
+                   )}
+                   <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-neutral-900 to-transparent" />
+                   <div className="absolute top-5 left-5 bg-black/60 backdrop-blur-sm border border-yellow-500/30 text-yellow-500 text-[9px] font-black uppercase tracking-[0.25em] px-3 py-1.5 rounded-full">
+                     {division.name} Segment
+                   </div>
+                   <div className="absolute top-5 right-5 bg-black/60 backdrop-blur-sm border border-white/10 text-white/70 text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">
+                     {division.count} Products
+                   </div>
+                 </div>
 
-                    <div className="flex flex-col flex-1 px-8 pt-4 pb-8">
-                      <h3 className="text-4xl md:text-5xl font-black tracking-tighter text-white uppercase mb-2 group-hover:text-yellow-400 transition-colors duration-300">
-                        {division.name}
-                      </h3>
-                      
-                      <div className="w-full h-px bg-white/8 mb-5" />
-                      <p className="text-[9px] font-black uppercase tracking-[0.3em] text-neutral-500 mb-4">Products in this division</p>
+                 <div className="flex flex-col flex-1 px-8 pt-4 pb-8">
+                   <h3 className="text-4xl md:text-5xl font-black tracking-tighter text-white uppercase mb-2 group-hover:text-yellow-400 transition-colors duration-300">
+                     {division.name}
+                   </h3>
+                   
+                   <div className="w-full h-px bg-white/8 mb-5" />
+                   <p className="text-[9px] font-black uppercase tracking-[0.3em] text-neutral-500 mb-4">Products in this division</p>
 
-                      <div className="grid grid-cols-2 gap-x-4 flex-1">
-                        {division.products.map((product: { name: string; slug: string }, i: number) => (
-                          <div key={i} className="flex items-start gap-2.5 py-2.5 border-b border-white/5">
-                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-yellow-500/40 flex-shrink-0 group-hover:bg-yellow-500 transition-colors" />
-                            <Link 
-                              to={`/product/${product.slug}`} 
-                              className="text-[12px] text-neutral-400 leading-snug hover:text-yellow-500 transition-colors truncate block w-full"
-                            >
-                              {product.name}
-                            </Link>
-                          </div>
-                        ))}
-                      </div>
+                   <div className="grid grid-cols-2 gap-x-4 flex-1">
+                     {division.products.map((product: { name: string; slug: string }, i: number) => (
+                       <div key={i} className="flex items-start gap-2.5 py-2.5 border-b border-white/5">
+                         <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-yellow-500/40 flex-shrink-0 group-hover:bg-yellow-500 transition-colors" />
+                         <Link 
+                           to={`/product/${product.slug}`} 
+                           className="text-[12px] text-neutral-400 leading-snug hover:text-yellow-500 transition-colors truncate block w-full"
+                         >
+                           {product.name}
+                         </Link>
+                       </div>
+                     ))}
+                   </div>
 
-                      <div className="flex items-center justify-between pt-6 mt-4 border-t border-white/8">
-                        <span className="text-xs text-neutral-600 font-mono">{division.count} types available</span>
-                        <Link
-                          to={`/products/${division.name.toLowerCase().replace(/\s+/g, '-')}`}
-                          className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-yellow-500 hover:text-white transition-colors group/cta"
-                        >
-                          Explore Division
-                          <div className="w-6 h-6 rounded-full border border-yellow-500 flex items-center justify-center group-hover/cta:bg-yellow-500 transition-all">
-                            <ArrowRight size={10} className="text-yellow-500 group-hover/cta:text-black" />
-                          </div>
-                        </Link>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
-        </FullScreenSection>
+                   <div className="flex items-center justify-between pt-6 mt-4 border-t border-white/8">
+                     <span className="text-xs text-neutral-600 font-mono">{division.count} types available</span>
+                     <Link
+                       to={`/products/${division.name.toLowerCase().replace(/\s+/g, '-')}`}
+                       className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-yellow-500 hover:text-white transition-colors group/cta"
+                     >
+                       Explore Division
+                       <div className="w-6 h-6 rounded-full border border-yellow-500 flex items-center justify-center group-hover/cta:bg-yellow-500 transition-all">
+                         <ArrowRight size={10} className="text-yellow-500 group-hover/cta:text-black" />
+                       </div>
+                     </Link>
+                   </div>
+                 </div>
+               </motion.div>
+             );
+           })}
+         </div>
+       </section>
 
         {/* MANUFACTURING DNA */}
-        <FullScreenSection id="manufacturing-dna" className="relative bg-[#050505] overflow-hidden border-y border-neutral-900">
+        <section className="py-24 md:py-32 relative bg-[#050505] overflow-hidden border-y border-neutral-900">
           <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-yellow-500/5 blur-[150px] rounded-full pointer-events-none" />
           <div className="container mx-auto px-6 relative z-10">
               <SectionReveal>
-                <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
                    <div className="max-w-2xl">
                       <div className="flex items-center gap-3 mb-6">
                         <span className="h-px w-12 bg-yellow-500"></span>
@@ -656,25 +636,28 @@ const Home: React.FC = () => {
                     <SectionReveal key={i} delay={i * 0.1}>
                        <motion.div 
                           whileHover={{ y: -10 }}
-                          className="group relative p-6 h-full bg-neutral-900/50 border border-neutral-800 hover:border-yellow-500/50 rounded-3xl transition-all duration-300"
+                          className="group relative p-8 h-full bg-neutral-900/50 border border-neutral-800 hover:border-yellow-500/50 rounded-3xl transition-all duration-300"
                        >
                           <div className="absolute inset-0 bg-yellow-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl" />
                           <div className="relative z-10 flex flex-col h-full justify-between">
                              <div>
-                                <div className="flex justify-between items-start mb-4">
-                                   <div className="p-3 bg-black border border-neutral-800 rounded-2xl text-yellow-500 group-hover:bg-yellow-500 group-hover:text-black transition-colors">
-                                      <item.icon size={24} strokeWidth={1.5} />
+                                <div className="flex justify-between items-start mb-6">
+                                   <div className="p-4 bg-black border border-neutral-800 rounded-2xl text-yellow-500 group-hover:bg-yellow-500 group-hover:text-black transition-colors">
+                                      <item.icon size={28} strokeWidth={1.5} />
                                    </div>
-                                   <span className="text-3xl font-black text-neutral-800 group-hover:text-neutral-700 transition-colors select-none">
+                                   <span className="text-4xl font-black text-neutral-800 group-hover:text-neutral-700 transition-colors select-none">
                                       {item.step}
                                    </span>
                                 </div>
-                                <h3 className="text-lg font-bold text-white mb-2 group-hover:text-yellow-400 transition-colors">
+                                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-yellow-400 transition-colors">
                                    {item.title}
                                 </h3>
-                                <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed">
+                                <p className="text-neutral-400 text-sm leading-relaxed">
                                    {item.desc}
                                 </p>
+                             </div>
+                             <div className="w-full h-px bg-neutral-800 mt-8 group-hover:bg-yellow-500/50 transition-colors relative">
+                                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-neutral-800 rounded-full group-hover:bg-yellow-500 transition-colors" />
                              </div>
                           </div>
                        </motion.div>
@@ -682,13 +665,13 @@ const Home: React.FC = () => {
                  ))}
               </div>
           </div>
-        </FullScreenSection>
+        </section>
 
         {/* JOURNAL */}
-        <FullScreenSection id="journal" className="relative bg-[#050505] overflow-hidden">
+        <section className="py-32 relative bg-[#050505] overflow-hidden">
           <div className="container mx-auto px-6 relative z-10">
             <SectionReveal>
-              <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
+              <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
                 <div>
                   <div className="flex items-center gap-3 mb-5">
                     <BookOpen className="text-yellow-500 w-4 h-4" />
@@ -727,7 +710,7 @@ const Home: React.FC = () => {
                       to={`/blog/${post.slug}`}
                       className="group flex flex-col h-full rounded-[2rem] overflow-hidden border border-white/5 bg-neutral-900 hover:border-yellow-500/30 transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(234,179,8,0.15)]"
                     >
-                      <div className="relative h-48 overflow-hidden flex-shrink-0 bg-neutral-800">
+                      <div className="relative h-56 overflow-hidden flex-shrink-0 bg-neutral-800">
                         {post.image_url ? (
                           <img
                             src={post.image_url}
@@ -803,7 +786,7 @@ const Home: React.FC = () => {
                       to="/blog"
                       className="group flex flex-col rounded-[2rem] overflow-hidden border border-white/5 bg-neutral-900 hover:border-yellow-500/30 transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(234,179,8,0.15)]"
                     >
-                      <div className="relative h-48 bg-gradient-to-br from-neutral-800 to-neutral-900 flex items-center justify-center overflow-hidden">
+                      <div className="relative h-56 bg-gradient-to-br from-neutral-800 to-neutral-900 flex items-center justify-center overflow-hidden">
                         <BookOpen className="w-10 h-10 text-white/15 relative z-10" />
                         <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm border border-yellow-500/30 text-yellow-500 text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full">
                           {placeholder.category}
@@ -823,39 +806,34 @@ const Home: React.FC = () => {
               </SectionReveal>
             )}
           </div>
-        </FullScreenSection>
+        </section>
 
         {/* GLOBAL REACH & CAREERS */}
-        <FullScreenSection id="global-careers" className="relative">
-          <div className="flex flex-col md:flex-row h-full w-full border-y border-white/10">
-            <Link to="/manufacturing" className="flex-1 relative group overflow-hidden border-r border-white/10 bg-[#0a0a0a] min-h-[350px] flex items-center justify-center">
-              <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700" alt="Global Shipping" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center z-20">
-                <AnimatedGlobalIcon />
-                <h3 className="text-5xl font-black text-white tracking-tighter group-hover:text-yellow-400 uppercase">Global OEM</h3>
-                <p className="mt-2 text-white/60 uppercase tracking-[0.3em] text-[10px]">Logistics & Export</p>
-              </div>
-            </Link>
-            <Link to="/careers" className="flex-1 relative group overflow-hidden bg-[#0a0a0a] min-h-[350px] flex items-center justify-center">
-              <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700" alt="Careers" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center z-20">
-                <AnimatedCareerIcon />
-                <h3 className="text-5xl font-black text-white tracking-tighter group-hover:text-yellow-400 uppercase">Careers</h3>
-                <p className="mt-2 text-white/60 uppercase tracking-[0.3em] text-[10px]">Join the Mission</p>
-              </div>
-            </Link>
-          </div>
-        </FullScreenSection>
+        <section className="flex flex-col md:flex-row h-auto md:h-[70vh] border-y border-white/10">
+          <Link to="/manufacturing" className="flex-1 relative group overflow-hidden border-r border-white/10 bg-[#0a0a0a] min-h-[400px]">
+            <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700" alt="Global Shipping" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center z-20">
+              <AnimatedGlobalIcon />
+              <h3 className="text-5xl font-black text-white tracking-tighter group-hover:text-yellow-400 uppercase">Global OEM</h3>
+              <p className="mt-2 text-white/60 uppercase tracking-[0.3em] text-[10px]">Logistics & Export</p>
+            </div>
+          </Link>
+          <Link to="/careers" className="flex-1 relative group overflow-hidden bg-[#0a0a0a] min-h-[400px]">
+            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700" alt="Careers" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center z-20">
+              <AnimatedCareerIcon />
+              <h3 className="text-5xl font-black text-white tracking-tighter group-hover:text-yellow-400 uppercase">Careers</h3>
+              <p className="mt-2 text-white/60 uppercase tracking-[0.3em] text-[10px]">Join the Mission</p>
+            </div>
+          </Link>
+        </section>
 
-        {/* GOOGLE REVIEWS */}
-        <FullScreenSection id="reviews" className="relative">
-          <GoogleReviews />
-        </FullScreenSection>
+        <GoogleReviews />
 
         {/* FAQ SECTION */}
-        <FullScreenSection id="faq" className="bg-[#050505] border-t border-white/5">
+        <section className="py-32 bg-[#050505] border-t border-white/5">
           <div className="container mx-auto px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
               <div className="lg:col-span-4">
                 <SectionReveal>
                   <div className="flex items-center gap-2 mb-6">
@@ -874,7 +852,7 @@ const Home: React.FC = () => {
                   </Link>
                 </SectionReveal>
               </div>
-              <div className="lg:col-span-8 max-h-[70vh] overflow-y-auto pr-4">
+              <div className="lg:col-span-8">
                 <SectionReveal delay={0.2}>
                   <div className="flex flex-col">
                     {faqs.map((faq, idx) => (
@@ -891,11 +869,11 @@ const Home: React.FC = () => {
               </div>
             </div>
           </div>
-        </FullScreenSection>
+        </section>
 
         {/* CTA */}
-        <FullScreenSection id="cta" className="bg-yellow-500 text-center relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10 pointer-events-none select-none flex items-center">
+        <section className="py-40 bg-yellow-500 text-center relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10 pointer-events-none select-none">
               <motion.div animate={{ x: ["0%", "-50%"] }} transition={{ repeat: Infinity, duration: 20, ease: "linear" }} className="flex whitespace-nowrap">
                   <span className="text-[20vh] font-black mr-20 text-black">DURABLE FASTENERS • </span>
                   <span className="text-[20vh] font-black mr-20 text-black">DURABLE FASTENERS • </span>
@@ -910,7 +888,7 @@ const Home: React.FC = () => {
                 </div>
               </SectionReveal>
           </div>
-        </FullScreenSection>
+        </section>
 
       </main>
     </>
