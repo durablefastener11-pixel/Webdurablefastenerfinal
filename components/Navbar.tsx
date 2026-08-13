@@ -48,7 +48,7 @@ const Navbar = () => {
             <div className="flex-shrink-0 flex items-center">
               <Link to="/" className="flex items-center gap-3 group">
                 <img 
-                  src="/durablelogo.png"
+                  src="/durablelogo.webp"
                   alt="Durable Fasteners" 
                   className="h-16 xs:h-18 md:h-[80px] w-auto object-contain transition-transform duration-300" 
                 />
