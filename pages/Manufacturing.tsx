@@ -96,7 +96,7 @@ const Manufacturing: React.FC = () => {
 
     const fetchInstagram = async () => {
       // Note: In production, store this token in an environment variable or backend
-      const token = 'IGAAWCAA2W4CZABZAGJHV25jdHJ2UFJIYVhkMUJJVXRGajZA3c202UUZAycHhDdlJzd1VCSTJjX0RReWNtN1AwTWFRWlB3WTZAxbWNzVVlocnJWVHREX0tfWDVWeWNSNm9RU2ZAQaHVneG1vSVZAwY3FEbnVWcFNqcTZANX2tZAb1Y2V3dCQQZDZD'; 
+      const token = 'IGAAU5AY4ShC1BZAGE2b0NfQ0t2TjhoTzN5OExhRUZAjU1VWZAG1DN3B1NDB2SDAybXl6UjFZAcFV6blYwYkQ4bGN5UHJ1QlczblpybjlPYV9BY1VjeTZAnWXRJUnViWFlZAZA2JyUjFMWWNNZAUxOLXR3UjdPS0E5ZAFNvRkZA0WTFhYW1TdwZDZD'; 
       try {
         const res = await fetch(`https://graph.instagram.com/me/media?fields=id,caption,media_url,permalink,media_type&limit=8&access_token=${token}`);
         const json = await res.json();
