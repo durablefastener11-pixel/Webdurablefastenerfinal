@@ -98,7 +98,7 @@ const Manufacturing: React.FC = () => {
       // Note: In production, store this token in an environment variable or backend
       const token = 'IGAAU5AY4ShC1BZAGE2b0NfQ0t2TjhoTzN5OExhRUZAjU1VWZAG1DN3B1NDB2SDAybXl6UjFZAcFV6blYwYkQ4bGN5UHJ1QlczblpybjlPYV9BY1VjeTZAnWXRJUnViWFlZAZA2JyUjFMWWNNZAUxOLXR3UjdPS0E5ZAFNvRkZA0WTFhYW1TdwZDZD'; 
       try {
-        const res = await fetch(`https://graph.instagram.com/me/media?fields=id,caption,media_url,permalink,media_type&limit=8&access_token=${token}`);
+       const res = await fetch(`https://graph.instagram.com/me/media?fields=id,caption,media_url,thumbnail_url,permalink,media_type&limit=8&access_token=${token}`);
         const json = await res.json();
         if (json.data) setInstaPosts(json.data);
       } catch (err) {
@@ -136,11 +136,9 @@ const Manufacturing: React.FC = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen pt-20 font-sans text-slate-800 overflow-x-hidden selection:bg-blue-600 selection:text-white">
+    <div className="bg-white min-h-screen pt-18 font-sans text-slate-800 overflow-x-hidden selection:bg-blue-600 selection:text-white">
       <Helmet>
         <title>Fastener Manufacturing Factory in Rajkot | Durable Fastener</title>
-        {/* Ye rahi canonical tag ki line */}
-        <link rel="canonical" href="https://durablefastener.com/manufacturing" />
         <style>
           {`
             html, body { max-width: 100%; overflow-x: hidden; }
@@ -408,52 +406,65 @@ const Manufacturing: React.FC = () => {
       </section>
 
       {/* ================= 9. INSTAGRAM FEED ================= */}
-      <section className="py-24 bg-white border-t border-slate-100">
-        <div className="max-w-7xl mx-auto px-6">
-          <RevealOnScroll>
-            <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-6">
-              <div className="text-center md:text-left">
-                <h2 className="text-blue-600 font-bold uppercase tracking-widest text-sm mb-3 flex items-center justify-center md:justify-start gap-2">
-                  <Instagram size={18} /> Live from Rajkot Factory
-                </h2>
-                <h3 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Our Social Media Journey</h3>
-              </div>
-              <a href="https://instagram.com/durablefastener" target="_blank" className="group flex items-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-blue-600 transition-all shadow-lg">
-                Follow @durablefastener <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-              </a>
-            </div>
-          </RevealOnScroll>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {instaPosts.length > 0 ? instaPosts.map((post, index) => (
-              <RevealOnScroll key={post.id} delay={index * 100}>
-                <a href={post.permalink} target="_blank" className="group relative block aspect-square bg-slate-100 rounded-[2rem] overflow-hidden border-2 border-transparent hover:border-blue-500 transition-all shadow-sm">
-                  {post.media_type === 'VIDEO' ? (
-                    <video className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" muted loop onMouseOver={e => e.currentTarget.play()} onMouseOut={e => e.currentTarget.pause()}>
-                      <source src={post.media_url} type="video/mp4" />
-                    </video>
-                  ) : (
-                    <img src={post.media_url} alt="Factory Update" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                  )}
-                  {post.media_type === 'VIDEO' && (
-                    <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md p-2 rounded-full text-white">
-                      <Play size={16} fill="white" />
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
-                    <p className="text-white text-xs font-medium line-clamp-2">{post.caption || "View on Instagram"}</p>
-                  </div>
-                </a>
-              </RevealOnScroll>
-            )) : (
-              [...Array(4)].map((_, i) => (
-                <div key={i} className="aspect-square bg-slate-100 rounded-[2rem] animate-pulse"></div>
-              ))
-            )}
-          </div>
+     {/* ================= 9. INSTAGRAM FEED ================= */}
+<section className="py-24 bg-white border-t border-slate-100">
+  <div className="max-w-7xl mx-auto px-6">
+    <RevealOnScroll>
+      <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-6">
+        <div className="text-center md:text-left">
+          <h2 className="text-blue-600 font-bold uppercase tracking-widest text-sm mb-3 flex items-center justify-center md:justify-start gap-2">
+            <Instagram size={18} /> Live from Rajkot Factory
+          </h2>
+          <h3 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Our Social Media Journey</h3>
         </div>
-      </section>
+        <a href="https://instagram.com/durablefastener" target="_blank" rel="noopener noreferrer" className="group flex items-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-blue-600 transition-all shadow-lg">
+          Follow @durablefastener <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+        </a>
+      </div>
+    </RevealOnScroll>
 
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+      {instaPosts.length > 0 ? instaPosts.map((post, index) => {
+        // Use thumbnail_url if available (for videos), otherwise fallback to media_url
+        const displayImage = post.thumbnail_url || post.media_url;
+
+        return (
+          <RevealOnScroll key={post.id} delay={index * 100}>
+            <a href={post.permalink} target="_blank" rel="noopener noreferrer" className="group relative block aspect-square bg-slate-100 rounded-[2rem] overflow-hidden border-2 border-transparent hover:border-blue-500 transition-all shadow-sm">
+              {displayImage ? (
+                <img 
+                  src={displayImage} 
+                  alt={post.caption || "Factory Update"} 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs font-medium">
+                  Preview Unavailable
+                </div>
+              )}
+
+              {/* Video Play Icon Overlay */}
+              {post.media_type === 'VIDEO' && (
+                <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md p-2 rounded-full text-white shadow-md">
+                  <Play size={16} fill="white" />
+                </div>
+              )}
+
+              {/* Caption Overlay on Hover */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
+                <p className="text-white text-xs font-medium line-clamp-2">{post.caption || "View on Instagram"}</p>
+              </div>
+            </a>
+          </RevealOnScroll>
+        );
+      }) : (
+        [...Array(4)].map((_, i) => (
+          <div key={i} className="aspect-square bg-slate-100 rounded-[2rem] animate-pulse"></div>
+        ))
+      )}
+    </div>
+  </div>
+</section>
       {/* ================= 10. USP & CTA ================= */}
       <section className="py-24 px-6 bg-slate-50 text-center border-t border-slate-200">
          <div className="max-w-5xl mx-auto">
