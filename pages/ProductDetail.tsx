@@ -154,12 +154,14 @@ const buildProductSchema = (
   selectedLen: string,
   selectedUnit: string,
 ) => {
+  // Ensure images array exists, at least one placeholder
   let images = (product.images || []);
   if (!images.length) {
     images = ['https://via.placeholder.com/600x600?text=No+Image'];
   }
   const cleanedImages = images.map((img: string) => cleanImageUrl(img));
 
+  // Build additionalProperty safely
   const specifications = product.specifications || [];
   const additionalProperties = specifications
     .filter((s: any) => s?.key && !HIDDEN_SPECS.includes(s.key.toLowerCase()))
@@ -169,6 +171,7 @@ const buildProductSchema = (
       "value": s.value,
     }));
 
+  // Build size string only if both dimensions exist
   let size = undefined;
   if (selectedDia && selectedLen) {
     size = `${selectedDia} × ${selectedLen} ${selectedUnit}`;
@@ -204,10 +207,6 @@ const buildProductSchema = (
         "price": "0",
         "priceCurrency": "INR",
         "description": "Contact for bulk pricing",
-        "valueAddedTaxIncluded": false,
-        "minPrice": 0,
-        "maxPrice": 999999,  // Add reasonable max for bulk
-        "priceType": "https://schema.org/ContactForPrice"  // ✅ This tells Google it's contact-based
       },
       "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
       "availability": "https://schema.org/InStock",
@@ -215,7 +214,6 @@ const buildProductSchema = (
       "seller": {
         "@type": "Organization",
         "name": "Durable Fastener Private Limited",
-        "url": "https://durablefastener.com"
       },
     },
   };
@@ -543,6 +541,13 @@ const ProductDetail: React.FC = () => {
   const displayMaterial = product.material || '';
   const displayHeadType = product.head_type?.replace(/Buggel/gi, 'Bugle') || '';
   const materialData = getMaterialData(displayMaterial);
+  const seoTitle = product.seo_title || `${product.name} | Durable Fastener – Industrial Solutions`;
+const seoDescription = product.seo_description 
+  || product.short_description 
+  || `High-quality ${product.name} from Durable Fastener. Ideal for industrial applications. Bulk orders available.`;
+  const metaKeywords = product.seo_keywords ? (
+  <meta name="keywords" content={product.seo_keywords} />
+) : null;
 
   // Schema data – always generated even if some fields missing
   const breadcrumbSchema = buildBreadcrumbSchema(product.name, slug!);
@@ -564,12 +569,9 @@ const ProductDetail: React.FC = () => {
       style={fontBody}
     >
       <Helmet>
-        <title>{product.name} | Durable Fastener – Industrial Solutions</title>
-        <link rel="canonical" href={canonicalUrl} />
-        <meta
-          name="description"
-          content={product.short_description || `High-quality ${product.name} from Durable Fastener. Ideal for industrial applications. Bulk orders available.`}
-        />
+         <title>{seoTitle}</title>
+  <link rel="canonical" href={canonicalUrl} />
+  <meta name="description" content={seoDescription} />
         {/* Breadcrumb Schema */}
         <script type="application/ld+json">
           {JSON.stringify(breadcrumbSchema)}
@@ -581,7 +583,7 @@ const ProductDetail: React.FC = () => {
       </Helmet>
 
       {/* Breadcrumb Nav Bar */}
-      <div className="fixed top-[80px] md:top-[170px] left-0 w-full z-30 bg-neutral-900 border-b border-neutral-800 shadow-md">
+      <div className="fixed top-[80px] md:top-[96px] left-0 w-full z-30 bg-neutral-900 border-b border-neutral-800 shadow-md">
         <div className="max-w-7xl mx-auto px-5 py-2.5">
           <nav className="flex items-center gap-2 text-[13px] md:text-[14px] font-medium tracking-wide">
             <Link to="/" className="text-neutral-400 hover:text-white transition-colors">Home</Link>
@@ -681,48 +683,84 @@ const ProductDetail: React.FC = () => {
 
                   {/* SELECT LENGTH */}
                   {availableLengthOptions.length > 0 && (
-                    <div className="mb-5">
-                      <div className="flex justify-between items-end mb-0 border-b border-neutral-100 pb-2">
-                        <SectionHeader icon={Maximize2} title={`Select Length (${selectedUnit})`} />
-                        <span className="text-4xl font-bold text-neutral-900 tracking-tight" style={fontHeading}>
-                          {selectedLen || '--'}
-                          <span className="text-sm text-neutral-400 ml-1 font-sans font-medium">{selectedUnit}</span>
-                        </span>
-                      </div>
-                      <div className="w-full bg-neutral-50 border border-neutral-200 rounded-xl p-2 relative overflow-hidden">
-                        <div
-                          className="absolute inset-0 opacity-[0.05] pointer-events-none"
-                          style={{
-                            backgroundImage: 'linear-gradient(#000 1px,transparent 1px),linear-gradient(90deg,#000 1px,transparent 1px)',
-                            backgroundSize: '12px 12px',
-                          }}
-                        />
-                        <div className="flex items-end justify-between h-32 gap-1 relative z-10 w-full px-1">
-                          {availableLengthOptions.map((opt: any, idx: number) => {
-                            const isSelected = selectedLen === opt.value && selectedUnit === opt.unit;
-                            return (
-                              <button
-                                key={idx}
-                                onClick={() => { setSelectedLen(opt.value); setSelectedUnit(opt.unit); }}
-                                className="group flex-1 flex flex-col items-center justify-end h-full gap-3 focus:outline-none relative"
-                              >
-                                <span className={`font-mono transition-all duration-200 whitespace-nowrap block ${isSelected
-                                    ? 'text-base font-bold text-neutral-900 -translate-y-2 scale-110'
-                                    : 'text-xs sm:text-sm text-neutral-500 font-medium group-hover:text-neutral-900'
-                                  }`}>
-                                  {parseFloat(opt.value)}
-                                  {opt.unit !== 'mm' && <span className="text-[9px] block text-center">{opt.unit}</span>}
-                                </span>
-                                <div className={`w-1.5 sm:w-2 rounded-t-[2px] transition-all duration-300 ${isSelected ? 'h-full bg-yellow-500 shadow-md' : 'h-8 bg-neutral-300 group-hover:h-12 group-hover:bg-neutral-400'
-                                  }`} />
-                                <div className="absolute bottom-0 w-full h-[1px] bg-neutral-300 -z-10" />
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  )}
+  <div className="mb-5">
+    <div className="flex justify-between items-end mb-0 border-b border-neutral-100 pb-2">
+      <SectionHeader icon={Maximize2} title={`Select Length (${selectedUnit})`} />
+      <span className="text-4xl font-bold text-neutral-900 tracking-tight" style={fontHeading}>
+        {selectedLen || '--'}
+        <span className="text-sm text-neutral-400 ml-1 font-sans font-medium">{selectedUnit}</span>
+      </span>
+    </div>
+    <div className="w-full bg-neutral-50 border border-neutral-200 rounded-xl p-2 relative overflow-hidden">
+      <div
+        className="absolute inset-0 opacity-[0.05] pointer-events-none"
+        style={{
+          backgroundImage: 'linear-gradient(#000 1px,transparent 1px),linear-gradient(90deg,#000 1px,transparent 1px)',
+          backgroundSize: '12px 12px',
+        }}
+      />
+      <div className="flex items-end justify-between h-40 gap-1 relative z-10 w-full px-1">
+        {availableLengthOptions.map((opt: any, idx: number) => {
+          const isSelected = selectedLen === opt.value && selectedUnit === opt.unit;
+          
+          // --- AUTO BAR HEIGHT CALCULATION ---
+          // Find min and max length values for dynamic scaling
+          const numericValues = availableLengthOptions.map(o => parseFloat(o.value));
+          const minVal = Math.min(...numericValues);
+          const maxVal = Math.max(...numericValues);
+          const range = maxVal - minVal || 1; // Avoid division by zero
+          
+          // Calculate percentage height (minimum 20% height for visibility)
+          const currentValue = parseFloat(opt.value);
+          const heightPercent = 20 + ((currentValue - minVal) / range) * 70; // 20% to 90% range
+          const barHeight = Math.max(25, Math.min(90, heightPercent)); // Clamp between 25% and 90%
+          
+          return (
+            <button
+              key={idx}
+              onClick={() => { setSelectedLen(opt.value); setSelectedUnit(opt.unit); }}
+              className="group flex-1 flex flex-col items-center justify-end h-full gap-2 focus:outline-none relative"
+            >
+              {/* BAR - height dynamically scales with length value */}
+              <div 
+                className={`w-1.5 sm:w-3 rounded-t-[3px] transition-all duration-300 ${
+                  isSelected ? 'bg-yellow-500 shadow-lg shadow-yellow-500/30' : 'bg-neutral-300 group-hover:bg-neutral-400'
+                }`}
+                style={{ 
+                  height: `${barHeight}%`,
+                  minHeight: '8px'
+                }}
+              />
+              
+              {/* VALUE LABEL */}
+              <span className={`font-mono transition-all duration-200 whitespace-nowrap block ${
+                isSelected 
+                  ? 'text-base font-bold text-neutral-900 -translate-y-0.5 scale-110' 
+                  : 'text-xs sm:text-sm text-neutral-500 font-medium group-hover:text-neutral-900'
+              }`}>
+                {parseFloat(opt.value)}
+                {opt.unit !== 'mm' && <span className="text-[9px] block text-center">{opt.unit}</span>}
+              </span>
+              
+              {/* SELECTION INDICATOR LINE */}
+              <div className="absolute bottom-0 w-full h-[1px] bg-neutral-300 -z-10" />
+              
+              {/* SMALL RULER MARKERS */}
+              <div className="absolute bottom-5 w-px h-1.5 bg-neutral-300 -z-5" />
+            </button>
+          );
+        })}
+      </div>
+      
+      {/* RULER REFERENCE LABELS */}
+      <div className="flex justify-between px-1 mt-1 text-[8px] font-mono text-neutral-400 uppercase tracking-wider">
+        <span>Min</span>
+        <span>Length Scale</span>
+        <span>Max</span>
+      </div>
+    </div>
+  </div>
+)}
 
                   {/* Finish */}
                   {availableFinishes.length > 0 && (
@@ -900,7 +938,11 @@ const ProductDetail: React.FC = () => {
                       animate={{ top: ['-100%', '200%'] }}
                       transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
                     />
-                  
+                    <div className="absolute top-6 left-6 z-20">
+                      <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded bg-neutral-100 border border-neutral-300 text-[11px] font-mono uppercase text-neutral-600 font-bold tracking-wider">
+                        ISO View
+                      </span>
+                    </div>
                     {product.technical_drawing ? (
                       <motion.img
                         initial={{ opacity: 0, scale: 0.9 }}
