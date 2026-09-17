@@ -1,7 +1,7 @@
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const SUPABASE_URL = "https://wterhjmgsgyqgbwviomo.supabase.co";
+    const SUPABASE_URL = "https://kirmgyixhomfnnqdqhcb.supabase.co";
 
     if (request.method === "OPTIONS") {
       return new Response(null, {
