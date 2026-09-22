@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -12,6 +13,7 @@ const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
     <App />
-    <Analytics />   {/* <-- Ye line aapne miss kar di thi, ab add ho gayi */}
+    <Analytics />
+    <SpeedInsights />
   </React.StrictMode>
 );
