@@ -17,7 +17,21 @@ const THEME = {
 
 const fontHeading = { fontFamily: '"Oswald", sans-serif', letterSpacing: '0.05em' };
 const fontBody = { fontFamily: '"Roboto", sans-serif' };
-
+const cleanImageUrl = (url: string): string => {
+  if (!url || typeof url !== 'string') return '';
+  
+  const R2_BASE = "https://pub-ffd0eb07a99540ac95c35c521dd8f7ae.r2.dev";
+  
+  if (url.startsWith(R2_BASE)) return url;
+  
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    const fileName = url.split('/').pop();
+    return `${R2_BASE}/${fileName}`;
+  }
+  
+  const cleanPath = url.startsWith('/') ? url.slice(1) : url;
+  return `${R2_BASE}/${cleanPath}`;
+};
 // Helper to get CSS classes for finish colors
 const getColorClass = (colorName: string) => {
   const c = colorName.toLowerCase().trim();
