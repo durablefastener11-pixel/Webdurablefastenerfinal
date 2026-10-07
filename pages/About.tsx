@@ -2144,10 +2144,10 @@ society and future.
         {/* Improved Grid Layout */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 sm:gap-8 mt-8 max-w-4xl mx-auto">
           <EmployeeCard 
-            name="Ms. Asmita" 
+            name="Ms. Hasti" 
             role="Office Executive" 
             delay={0.3} 
-            image="/asmita.png" // Updated path
+            image="/hasti.png" // Updated path
           />
           <EmployeeCard 
             name="Ms. Yagni" 
