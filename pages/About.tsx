@@ -2147,7 +2147,7 @@ society and future.
             name="Ms. Hasti" 
             role="Office Executive" 
             delay={0.3} 
-            image="/public/hasti.png" // Updated path
+            image="/hasti.png" // Updated path
           />
           <EmployeeCard 
             name="Ms. Yagni" 
