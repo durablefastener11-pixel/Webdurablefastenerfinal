@@ -28,7 +28,15 @@ import {
   FileText,
 } from 'lucide-react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-
+import hastiImg from '/hasti.png'; // or relative path depending on your folder structure, e.g., './assets/hasti.png'
+import yagniImg from '/yagni.png';
+import vrs1Img from '/vrs1.png';
+import diptiImg from '/dipti.png';
+import dhavalImg from '/dhaval.png';
+import ks12Img from '/KS12.png';
+import ayushiImg from '/ayushi.jpg';
+import prinsiImg from '/prinsi123.png';
+import payalImg from '/payal.png';
 // ============================================
 // PREMIUM DESIGN SYSTEM - VARIABLES & THEMES
 // ============================================
@@ -297,7 +305,7 @@ const leadershipData = [
     id: 1,
     name: "Mr. Vipul",
     role: "C.E.O. & Director",
-    image:"/vrs1.png",
+    image: vrs1Img,
     description: "Mr. Vipul is the Founder, CEO, and Director of Durable Fastener Pvt. Ltd. With extensive experience in the fastener industry, he leads the company’s strategic direction, business development, procurement, and financial management. His vision for quality, customer satisfaction, and long-term partnerships has been instrumental in the company’s growth and market reputation.",
     mainIcon: Crown,
     stats: [
@@ -310,7 +318,7 @@ const leadershipData = [
     id: 2,
     name: "Ms. Dipti",
     role: "Sales Manager & Director",
-    image: "/dipti.png",
+    image: diptiImg,
     description: "Ms. Dipti serves as Sales Manager and Director at Durable Fastener Pvt. Ltd., overseeing customer relationships, sales operations, and business coordination. With a strong focus on customer service and market responsiveness, she plays a key role in strengthening client engagement and supporting the company’s sales growth initiatives.",
     mainIcon: ShieldCheck,   // <-- ADD THIS LINE
     stats: [
@@ -323,7 +331,7 @@ const leadershipData = [
     id: 3,
     name: "Mr. Dhaval",
     role: "C.O.O. & Director",
-    image: "/dhaval.png",
+image: dhavalImg,
     description: "Mr. Dhaval is the Chief Operating Officer (COO) and Director of Durable Fastener Pvt. Ltd. He is responsible for overseeing manufacturing operations, production planning, warehouse management, and dispatch activities. His operational expertise and commitment to efficiency help ensure consistent product quality and timely order fulfillment.",
     mainIcon: TrendingUp,
     stats: [
@@ -335,8 +343,7 @@ const leadershipData = [
   {
     id: 4,
     name: "Mr. Kishan",
-    role: "Exports & HR Head",
-    image: "/KS12.png",
+ image: ks12Img,
     description: "Mr. Kishan leads the Exports and Human Resources functions at Durable Fastener Pvt. Ltd. He is responsible for international business development, organizational policies, talent management, and digital initiatives. His focus on process improvement, workforce development, and global market expansion supports the company’s long-term growth objectives.",
     mainIcon: Settings,
     stats: [
@@ -2120,44 +2127,26 @@ society and future.
   </div>
 </FullScreenSection>
 
-        {/* ==================== TEAM SECTION 1 ==================== */}
-        <FullScreenSection id="our-team-1" className="bg-[#0A0A0F]">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
-            <SectionHeader badge="The Execution Force" title="Meet Our" highlight="Expert Team" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 mt-8">
-              <EmployeeCard name="Ms. Ayushi" role="Office Executive" delay={0.05} image="/ayushi.jpg" />
-              <EmployeeCard name="Ms. Prinsi" role="Office Executive" delay={0.25} image="/prinsi123.png" />
-               <EmployeeCard name="Ms. Payal" role="Office Executive" delay={0.2} image="/payal.png" />
-            </div>
-          </div>
-        </FullScreenSection>
+       <FullScreenSection id="our-team-1" className="bg-[#0A0A0F]">
+  <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
+    <SectionHeader badge="The Execution Force" title="Meet Our" highlight="Expert Team" />
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 mt-8">
+      <EmployeeCard name="Ms. Ayushi" role="Office Executive" delay={0.05} image={ayushiImg} />
+      <EmployeeCard name="Ms. Prinsi" role="Office Executive" delay={0.25} image={prinsiImg} />
+      <EmployeeCard name="Ms. Payal" role="Office Executive" delay={0.2} image={payalImg} />
+    </div>
+  </div>
+</FullScreenSection>
 
-        {/* ==================== TEAM SECTION 2 ==================== */}
-        <FullScreenSection id="our-team-2" className="bg-[#0A0A0F] py-16 sm:py-20">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
-        <SectionHeader 
-          badge="The Execution Force" 
-          title="Meet Our" 
-          highlight="Expert Team" 
-        />
-        
-        {/* Improved Grid Layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 sm:gap-8 mt-8 max-w-4xl mx-auto">
-          <EmployeeCard 
-            name="Ms. Hasti" 
-            role="Office Executive" 
-            delay={0.3} 
-            image="/hasti.png" // Updated path
-          />
-          <EmployeeCard 
-            name="Ms. Yagni" 
-            role="Office Executive" 
-            delay={0.35} 
-            image="/yagni.png" // Updated path
-          />
-        </div>
-      </div>
-    </FullScreenSection>
+<FullScreenSection id="our-team-2" className="bg-[#0A0A0F] py-16 sm:py-20">
+  <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
+    <SectionHeader badge="The Execution Force" title="Meet Our" highlight="Expert Team" />
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 sm:gap-8 mt-8 max-w-4xl mx-auto">
+      <EmployeeCard name="Ms. Hasti" role="Office Executive" delay={0.3} image={hastiImg} />
+      <EmployeeCard name="Ms. Yagni" role="Office Executive" delay={0.35} image={yagniImg} />
+    </div>
+  </div>
+</FullScreenSection>
 
        
           {/* ==================== TESTIMONIALS ==================== */} 
