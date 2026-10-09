@@ -37,6 +37,22 @@ import ks12Img from '/KS12.png';
 import ayushiImg from '/ayushi.jpg';
 import prinsiImg from '/prinsi123.png';
 import payalImg from '/payal.png';
+
+
+
+export interface Leader {
+  id: number;
+  name: string;
+  role: string;
+  email?: string; // 👈 Add this line
+  image: string;
+  description: string;
+  mainIcon: any; // or your specific icon type
+  stats: {
+    icon: any;
+    label: string;
+  }[];
+}
 // ============================================
 // PREMIUM DESIGN SYSTEM - VARIABLES & THEMES
 // ============================================
@@ -305,7 +321,8 @@ const leadershipData = [
     id: 1,
     name: "Mr. Vipul",
     role: "C.E.O. & Director",
-    image: vrs1Img,
+    email: "vipul@durablefastener.com",
+    image:"/vrs1.png",
     description: "Mr. Vipul is the Founder, CEO, and Director of Durable Fastener Pvt. Ltd. With extensive experience in the fastener industry, he leads the company’s strategic direction, business development, procurement, and financial management. His vision for quality, customer satisfaction, and long-term partnerships has been instrumental in the company’s growth and market reputation.",
     mainIcon: Crown,
     stats: [
@@ -318,7 +335,8 @@ const leadershipData = [
     id: 2,
     name: "Ms. Dipti",
     role: "Sales Manager & Director",
-    image: diptiImg,
+    email: "dipti@durablefastener.com",
+    image: "/dipti.png",
     description: "Ms. Dipti serves as Sales Manager and Director at Durable Fastener Pvt. Ltd., overseeing customer relationships, sales operations, and business coordination. With a strong focus on customer service and market responsiveness, she plays a key role in strengthening client engagement and supporting the company’s sales growth initiatives.",
     mainIcon: ShieldCheck,   // <-- ADD THIS LINE
     stats: [
@@ -331,7 +349,8 @@ const leadershipData = [
     id: 3,
     name: "Mr. Dhaval",
     role: "C.O.O. & Director",
-image: dhavalImg,
+    email: "dhaval@durablefastener.com",
+    image: "/dhaval.png",
     description: "Mr. Dhaval is the Chief Operating Officer (COO) and Director of Durable Fastener Pvt. Ltd. He is responsible for overseeing manufacturing operations, production planning, warehouse management, and dispatch activities. His operational expertise and commitment to efficiency help ensure consistent product quality and timely order fulfillment.",
     mainIcon: TrendingUp,
     stats: [
@@ -343,7 +362,9 @@ image: dhavalImg,
   {
     id: 4,
     name: "Mr. Kishan",
- image: ks12Img,
+    role: "Exports & HR Head",
+    email: "kishan@durablefastener.com",
+    image: "/KS12.png",
     description: "Mr. Kishan leads the Exports and Human Resources functions at Durable Fastener Pvt. Ltd. He is responsible for international business development, organizational policies, talent management, and digital initiatives. His focus on process improvement, workforce development, and global market expansion supports the company’s long-term growth objectives.",
     mainIcon: Settings,
     stats: [
@@ -1924,7 +1945,7 @@ society and future.
         </FullScreenSection>
 
         {/* ==================== LEADERSHIP 1 ==================== */}
-        <FullScreenSection id="leadership-1" className="relative bg-[#050508]">
+      <FullScreenSection id="leadership-1" className="relative bg-[#050508]">
   <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(245,158,11,0.05)_0%,transparent_60%)] pointer-events-none" />
   <div className="relative z-10 w-full px-4 sm:px-6 py-8 md:py-10">
     <div className="max-w-[1400px] mx-auto">
@@ -1979,19 +2000,32 @@ society and future.
 
               {/* Content Section */}
               <div className="w-full md:w-3/5 p-4 md:p-5 flex flex-col">
-                <div className="flex items-start gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#15151c] border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
-                    <MainIcon className="w-4 h-4 text-amber-500" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg md:text-xl font-bold text-white group-hover:text-amber-500 transition-colors">
-                      {leader.name}
-                    </h3>
-                    <p className="text-amber-500 text-[11px] font-medium">
-                      {leader.role}
-                    </p>
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-start gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-[#15151c] border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                      <MainIcon className="w-4 h-4 text-amber-500" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg md:text-xl font-bold text-white group-hover:text-amber-500 transition-colors">
+                        {leader.name}
+                      </h3>
+                      <p className="text-amber-500 text-[11px] font-medium">
+                        {leader.role}
+                      </p>
+                    </div>
                   </div>
                 </div>
+
+                {/* ✅ Separated Mail Contact Badge */}
+                {leader.email && (
+                  <a
+                    href={`mailto:${leader.email}`}
+                    className="inline-flex items-center gap-1.5 w-fit text-[11px] text-slate-300 bg-[#15151c] hover:bg-amber-500/10 hover:text-amber-400 border border-white/10 hover:border-amber-500/40 px-2.5 py-1 rounded-full transition-colors mb-3"
+                  >
+                    <Mail className="w-3 h-3 text-amber-500 shrink-0" />
+                    <span>{leader.email}</span>
+                  </a>
+                )}
 
                 {/* ✅ FULL DESCRIPTION - No truncation, no line-clamp */}
                 <p className="text-slate-300 text-xs md:text-sm leading-relaxed mb-3">
@@ -2025,8 +2059,9 @@ society and future.
   </div>
 </FullScreenSection>
 
-        {/* ==================== LEADERSHIP 2 ==================== */}
-        <FullScreenSection id="leadership-2" className="relative bg-[#050508]">
+
+{/* ==================== LEADERSHIP 2 ==================== */}
+<FullScreenSection id="leadership-2" className="relative bg-[#050508]">
   <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(245,158,11,0.05)_0%,transparent_60%)] pointer-events-none" />
   <div className="relative z-10 w-full px-4 sm:px-6 py-8 md:py-10">
     <div className="max-w-[1400px] mx-auto">
@@ -2095,6 +2130,17 @@ society and future.
                   </div>
                 </div>
 
+                {/* ✅ Separated Mail Contact Badge */}
+                {leader.email && (
+                  <a
+                    href={`mailto:${leader.email}`}
+                    className="inline-flex items-center gap-1.5 w-fit text-[11px] text-slate-300 bg-[#15151c] hover:bg-amber-500/10 hover:text-amber-400 border border-white/10 hover:border-amber-500/40 px-2.5 py-1 rounded-full transition-colors mb-3"
+                  >
+                    <Mail className="w-3 h-3 text-amber-500 shrink-0" />
+                    <span>{leader.email}</span>
+                  </a>
+                )}
+
                 {/* ✅ FULL DESCRIPTION - No truncation, no line-clamp */}
                 <p className="text-slate-300 text-xs md:text-sm leading-relaxed mb-3">
                   {leader.description}
@@ -2126,7 +2172,6 @@ society and future.
     </div>
   </div>
 </FullScreenSection>
-
        <FullScreenSection id="our-team-1" className="bg-[#0A0A0F]">
   <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
     <SectionHeader badge="The Execution Force" title="Meet Our" highlight="Expert Team" />
