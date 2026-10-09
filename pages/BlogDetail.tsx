@@ -9,7 +9,7 @@ import {
 import { Helmet } from 'react-helmet-async';
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
 
-// --- FAQ Item Component ---
+// --- FAQ Item Component (Fixed Line Breaks for Dynamic Admin Data) ---
 const FAQItem = ({ item, index }: { item: any; index: number }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -52,15 +52,6 @@ const BlogDetail: React.FC = () => {
   const [post, setPost] = useState<any>(null);
   const [sections, setSections] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const summarySection = useMemo(
-  () => sections.find(section => section.type === 'summary'),
-  [sections]
-);
-
-const contentSections = useMemo(
-  () => sections.filter(section => section.type !== 'summary'),
-  [sections]
-);
 
   // --- WHATSAPP MODAL STATES ---
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -108,6 +99,16 @@ const contentSections = useMemo(
       });
   }, [sections]);
 
+  // 🔥 NEW: Summary ko alag filter karna 🔥
+  const summarySection = useMemo(() => {
+    return sections.find(section => section.type === 'summary');
+  }, [sections]);
+
+  // 🔥 NEW: Baaki ke sections ko alag rakhna jisse do baar show na ho 🔥
+  const mainSections = useMemo(() => {
+    return sections.filter(section => section.type !== 'summary');
+  }, [sections]);
+
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-zinc-50">
       <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
@@ -119,49 +120,56 @@ const contentSections = useMemo(
   return (
     <div className="bg-[#FCFCFC] min-h-screen font-sans text-zinc-900 selection:bg-yellow-200">
       
-      {/* 🔥 INJECTED STYLE SHEET (STRICT FORMATTING FIX) 🔥 */}
+      {/* --- INJECTED STYLE SHEET (UPDATED FOR PERFECT H2 & H3 RENDERING) --- */}
       <style>{`
-        .blog-content-render b, .blog-content-render strong { font-weight: 800 !important; color: #18181b !important; }
+        /* Base Defaults for Body Paragraphs */
+        .blog-content-render {
+          font-family: 'Georgia', serif;
+          font-size: 17px;
+          line-height: 1.9;
+          color: #374151;
+        }
+
+        /* Fix Lists */
+        .blog-content-render ul { list-style-type: disc !important; padding-left: 2rem !important; margin: 1rem 0; }
+        .blog-content-render ol { list-style-type: decimal !important; padding-left: 2rem !important; margin: 1rem 0; }
+        
+        /* Fix Bold, Italic, Underline, Strike */
+        .blog-content-render b, .blog-content-render strong { font-weight: 800 !important; }
         .blog-content-render i, .blog-content-render em { font-style: italic !important; }
         .blog-content-render u { text-decoration: underline !important; }
         .blog-content-render s { text-decoration: line-through !important; }
-        .blog-content-render a { color: #2563eb !important; text-decoration: underline !important; font-weight: 600 !important; }
         
-        .blog-content-render p, .blog-content-render div {
-          margin-bottom: 1.5rem !important;
-          display: block;
-        }
-        .blog-content-render p:last-child, .blog-content-render div:last-child {
-          margin-bottom: 0 !important;
-        }
-/* 🔥 NAYA CODE: SUMMARY TEXT FORCE WHITE 🔥 */
-        .summary-content-render, .summary-content-render * { 
-          color: #ffffff !important; 
-        }
+        /* Fix Links */
+        .blog-content-render a { color: #2563eb !important; text-decoration: underline !important; font-weight: 600 !important; }
 
+        /* 🔥 CRITICAL FIX FOR H2 & H3 🔥 */
+        /* 🔥 SUMMARY BOX TEXT COLOR FIX 🔥 */
+        .summary-fix * {
+          color: #ffffff !important;
+        }
+        
+        /* Admin toolbar adds <span style="font-size: 16px"> which overrides Tailwind classes. 
+           This CSS forces spans inside Headings to inherit proper sizes while keeping custom colors intact. */
+        .heading-render span {
+          font-size: inherit !important;
+          font-weight: inherit !important;
+          font-family: inherit !important;
+          line-height: inherit !important;
+        }
       `}</style>
 
-         <Helmet>
-  {/* Title */}
-  <title>{post ? `${post.title} | Durable Fastener` : 'Durable Fastener Blog'}</title>
-
-  {/* Dynamic Meta Description */}
-  <meta 
-    name="description" 
-    content={
-      post?.meta_description || 
-      "Explore expert insights, technical guides, and industry updates on high-precision manufacturing and industrial fasteners from Durable Fastener."
-    } 
-  />
-
-  {/* Dynamic Canonical Link */}
-  {/* window.location.origin se aapki base domain dynamically fetch ho jayegi (e.g., https://yourwebsite.com) */}
-  <link 
-    rel="canonical" 
-    href={`${typeof window !== 'undefined' ? window.location.origin : 'https://www.durablefastener.com'}/blog/${slug}`} 
-  />
-</Helmet>
-
+      <Helmet>
+        <title>{post ? `${post.title} | Durable Fastener` : 'Durable Fastener Blog'}</title>
+        <meta 
+          name="description" 
+          content={
+            post?.meta_description || 
+            "Explore expert insights, technical guides, and industry updates on high-precision manufacturing and industrial fasteners from Durable Fastener."
+          } 
+        />
+        <link rel="canonical" href={`https://durablefastener.com/blog/${slug}`} />
+      </Helmet>
 
       <motion.div className="fixed top-0 left-0 right-0 h-1 bg-yellow-500 origin-left z-[250]" style={{ scaleX }} />
 
@@ -246,42 +254,41 @@ const contentSections = useMemo(
             </div>
           </header>
 
+          {/* 🔥 NEW: EXECUTIVE SUMMARY EXACTLY AT THE TOP 🔥 */}
+          {summarySection && (
+            <div className="relative mb-12 p-10 bg-[#0f0f11] rounded-[2rem] text-white shadow-2xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-[2px] w-8 bg-yellow-500" />
+                <span style={{ fontSize: 10, fontWeight: 900 }} className="uppercase tracking-[0.3em] text-yellow-500">EXECUTIVE SUMMARY</span>
+              </div>
+              <div className="blog-content-render summary-fix text-xl font-serif italic leading-relaxed" dangerouslySetInnerHTML={{ __html: summarySection.body || '' }} />
+            </div>
+          )}
+
+          {/* 🔥 UPDATED: mainSections map karega, summary ignore karega 🔥 */}
           <main className="prose prose-zinc prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight">
-            {summarySection && (
-  <div className="relative mb-16 p-10 bg-[#0a0a0a] rounded-[32px] shadow-2xl border border-yellow-500/20">
-
-    <div className="flex items-center gap-3 mb-6">
-      <div className="h-[2px] w-8 bg-yellow-500" />
-
-      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-yellow-500">
-        EXECUTIVE SUMMARY
-      </span>
-    </div>
-
-    <div
-      className="summary-content-render"
-      style={{
-        fontFamily: "'Georgia', serif",
-        fontSize: "20px",
-        lineHeight: "1.6",
-        fontStyle: "italic"
-      }}
-      dangerouslySetInnerHTML={{
-        __html: summarySection.body || ''
-      }}
-    />
-  </div>
-)}
-            {contentSections.map((section, idx) => {
+            {mainSections.map((section, idx) => {
               const sectionId = `section-${idx}`;
               switch (section.type) {
-                // 🔥 FIXED HEADING 2 (Solves &amp; Issue) 🔥
                 case 'heading2':
-                  return <h2 key={idx} id={sectionId} className="text-3xl md:text-4xl font-bold text-zinc-900 mt-20 mb-8 border-b-4 border-yellow-500 pb-4" dangerouslySetInnerHTML={{ __html: section.body || '' }} />;
+                  return (
+                    <h2 
+                      key={idx} 
+                      id={sectionId} 
+                      className="heading-render text-3xl md:text-4xl font-bold text-zinc-900 mt-20 mb-8 border-b-[3px] border-yellow-500 pb-3 font-serif leading-tight" 
+                      dangerouslySetInnerHTML={{ __html: section.body || '' }} 
+                    />
+                  );
                 
-                // 🔥 FIXED HEADING 3 (Solves &amp; Issue) 🔥
                 case 'heading3':
-                  return <h3 key={idx} id={sectionId} className="text-2xl font-bold text-zinc-800 mt-12 mb-6" dangerouslySetInnerHTML={{ __html: section.body || '' }} />;
+                  return (
+                    <h3 
+                      key={idx} 
+                      id={sectionId} 
+                      className="heading-render text-2xl md:text-3xl font-bold text-zinc-800 mt-12 mb-6 font-serif leading-tight" 
+                      dangerouslySetInnerHTML={{ __html: section.body || '' }} 
+                    />
+                  );
                 
                 case 'table':
                   return (
@@ -296,10 +303,10 @@ const contentSections = useMemo(
                         <tbody>
                           {section.rows?.map((row: string[], ri: number) => (
                             <tr key={ri} className={ri % 2 === 0 ? 'bg-white' : 'bg-zinc-50'}>
-                             {row.map((cell: string, ci: number) => (
+                              {row.map((cell: string, ci: number) => (
                                 <td 
                                   key={ci} 
-                                  className="blog-content-render px-6 py-4 text-sm text-zinc-600 border border-zinc-100"
+                                  className="blog-content-render px-6 py-4 text-sm border border-zinc-100"
                                   dangerouslySetInnerHTML={{ __html: cell || '' }}
                                 />
                               ))}
@@ -310,21 +317,27 @@ const contentSections = useMemo(
                     </div>
                   );
 
-                
-
                 case 'faq':
+                  const rawItems = section.faqItems || section.items || section.rows || [];
+                  const itemsArray = typeof rawItems === 'string' ? JSON.parse(rawItems) : rawItems;
+
+                  if (!Array.isArray(itemsArray) || itemsArray.length === 0) return null;
+
                   return (
-                    <div key={idx} id={sectionId} className="my-20 bg-white border border-zinc-100 rounded-[2.5rem] p-8 md:p-12 shadow-sm">
-                      <div className="flex items-center gap-4 mb-10">
-                        <div className="w-10 h-10 bg-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-500/20">
-                          <BookOpen className="text-black" size={20} />
+                    <div key={idx} id={sectionId} className="my-12 bg-white border border-zinc-100 rounded-[2rem] p-5 md:p-8 shadow-sm max-w-4xl mx-auto w-full">
+                      <div className="flex items-center gap-4 mb-6 pb-4 border-b border-zinc-100">
+                        <div className="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center shadow-md">
+                          <BookOpen className="text-amber-500" size={18} />
                         </div>
-                        <h2 className="text-2xl font-black uppercase tracking-tight text-zinc-900 m-0">
-                          {section.heading || 'FAQ Section'}
+                        <h2 className="text-lg md:text-xl font-black uppercase tracking-tight text-zinc-900 m-0">
+                          {section.heading || 'Frequently Asked Questions'}
                         </h2>
                       </div>
-                      <div className="divide-y divide-zinc-100">
-                        {section.faqItems?.map((item: any, fIdx: number) => <FAQItem key={fIdx} item={item} index={fIdx} />)}
+                      
+                      <div className="w-full">
+                        {itemsArray.map((item: any, fIdx: number) => (
+                          <FAQItem key={fIdx} item={item} index={fIdx} />
+                        ))}
                       </div>
                     </div>
                   );
@@ -336,10 +349,9 @@ const contentSections = useMemo(
                         <img src={section.splitImage || ''} alt="" className="w-full rounded-2xl shadow-xl object-cover border border-zinc-100" />
                         {section.caption && <p className="mt-3 text-sm text-zinc-400 italic font-serif text-center md:text-left">— {section.caption}</p>}
                       </div>
-                      {/* 🔥 FIXED SPLIT TEXT CONTENT 🔥 */}
                       <div 
-                        className="blog-content-render text-lg leading-[1.8] text-zinc-600 font-serif mb-6 text-justify whitespace-pre-wrap" 
-                        dangerouslySetInnerHTML={{ __html: section.splitContent || '' }} 
+                        className="blog-content-render"
+                        dangerouslySetInnerHTML={{ __html: section.splitContent || '' }}
                       />
                       <div className="clear-both"></div>
                     </div>
@@ -353,13 +365,12 @@ const contentSections = useMemo(
                     </figure>
                   );
 
-                // 🔥 FIXED DEFAULT PARAGRAPH RENDERER (Solves Bold/Underline breaking) 🔥
                 default:
                   return (
                     <section key={idx} id={sectionId} className="mb-12">
                       {section.heading && <h2 className="text-2xl font-bold text-zinc-900 mb-6">{section.heading}</h2>}
                       <div 
-                        className="blog-content-render text-lg leading-[1.8] text-zinc-600 font-serif font-light whitespace-pre-wrap"
+                        className="blog-content-render"
                         dangerouslySetInnerHTML={{ __html: section.body || '' }}
                       />
                     </section>
@@ -367,30 +378,31 @@ const contentSections = useMemo(
               }
             })}
           </main>
+
+          <footer className="mt-20 mb-12">
+            <div className="bg-zinc-900 rounded-[2rem] p-8 md:p-12 text-center relative overflow-hidden shadow-2xl">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(234,179,8,0.1),transparent)]" />
+              <div className="relative z-10 flex flex-col items-center">
+                <CheckCircle2 className="text-yellow-500 mb-6" size={40} />
+                <h2 className="text-2xl md:text-4xl font-bold text-white mb-4 tracking-tight">Built for Industrial Strength</h2>
+                <p className="text-zinc-400 text-base mb-8 max-w-xl mx-auto leading-relaxed font-sans">
+                  Join 500+ global partners who trust Durable Fastener for high-precision manufacturing.
+                </p>
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-4 w-full sm:w-auto">
+                  <a href="tel:+918758700704" className="flex items-center justify-center gap-2 bg-yellow-500 text-black font-black px-8 py-4 rounded-full text-[10px] uppercase tracking-widest hover:bg-white hover:scale-105 transition-all shadow-xl shadow-yellow-500/20 w-full sm:w-auto">
+                    <Phone size={14} />
+                    <span>Engineering</span>
+                  </a>
+                  <button onClick={() => setIsModalOpen(true)} className="bg-yellow-500 text-black font-black px-8 py-4 rounded-full text-[10px] uppercase tracking-widest hover:bg-white hover:scale-105 transition-all shadow-xl shadow-yellow-500/20 w-full sm:w-auto">
+                    Request Samples
+                  </button>
+                </div>
+              </div>
+            </div>
+          </footer>
+
         </article>
       </div>
-
-      <footer className="max-w-6xl mx-auto px-6 mb-32">
-        <div className="bg-zinc-900 rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(234,179,8,0.1),transparent)]" />
-          <div className="relative z-10 flex flex-col items-center">
-            <CheckCircle2 className="text-yellow-500 mb-8" size={48} />
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 tracking-tight">Built for Industrial Strength</h2>
-            <p className="text-zinc-400 text-lg mb-12 max-w-2xl mx-auto leading-relaxed">
-              Join 500+ global partners who trust Durable Fastener for high-precision manufacturing.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
-              <a href="tel:+918758700704" className="flex items-center justify-center gap-2 bg-yellow-500 text-black font-black px-12 py-5 rounded-full text-[10px] uppercase tracking-widest hover:bg-white hover:scale-105 transition-all shadow-xl shadow-yellow-500/20 w-full sm:w-auto">
-                <Phone size={18} />
-                <span>Engineering</span>
-              </a>
-              <button onClick={() => setIsModalOpen(true)} className="bg-yellow-500 text-black font-black px-12 py-5 rounded-full text-[10px] uppercase tracking-widest hover:bg-white hover:scale-105 transition-all shadow-xl shadow-yellow-500/20 w-full sm:w-auto">
-                Request Samples
-              </button>
-            </div>
-          </div>
-        </div>
-      </footer>
 
       {/* --- WHATSAPP REQUEST MODAL --- */}
       <AnimatePresence>
