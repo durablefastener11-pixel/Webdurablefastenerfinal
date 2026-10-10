@@ -138,9 +138,9 @@ const App: React.FC = () => {
                   <Route path="life-gallery" element={<AdminLifeGallery />} />
                   <Route path="manufacturing" element={<ManufacturingAdmin />} />
                   {/* --- JOBS ROUTES --- */}
-                  <Route path="jobs" element={<JobsList />} />
-                  <Route path="jobs/new" element={<AddJob />} /> 
-                  <Route path="jobs/edit/:id" element={<AddJob />} />
+                  <Route path="/admin/jobs" element={<JobsList />} />
+<Route path="/admin/jobs/new" element={<AddJob />} />
+<Route path="/admin/jobs/edit/:id" element={<AddJob />} />
                  
                   {/* Blog Admin Routes */}
                   <Route path="edit-blog/:id" element={<AddBlog />} />
