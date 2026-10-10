@@ -244,20 +244,20 @@ const JobCard: React.FC<{ job: any }> = ({ job }) => {
                   {timeIndicator?.isUpdated ? 'Updated Date' : 'Posted Date'}
                 </p>
                 <p className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                  <Calendar size={14} className="text-slate-400" />
-                  {timeIndicator?.displayDate 
-                    ? new Date(timeIndicator.displayDate).toLocaleDateString('en-IN', {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric'
-                      })
-                    : new Date(job.created_at).toLocaleDateString('en-IN', {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric'
-                      })
-                  }
-                </p>
+  <Calendar size={14} className="text-slate-400" />
+  {(() => {
+    const rawDate = timeIndicator?.displayDate || job.created_at;
+    const parsedDate = rawDate ? new Date(rawDate) : new Date();
+    // Fallback to current date if parsing results in an invalid date (like 1970)
+    const validDate = !isNaN(parsedDate.getTime()) && parsedDate.getFullYear() > 1970 ? parsedDate : new Date();
+    
+    return validDate.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+  })()}
+</p>
               </div>
             </div>
             <div className="prose prose-sm prose-slate max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-a:text-blue-600 prose-strong:text-slate-900 prose-li:marker:text-slate-400" dangerouslySetInnerHTML={{ __html: job.description }} />
