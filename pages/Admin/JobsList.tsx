@@ -116,9 +116,9 @@ const JobsList: React.FC = () => {
       {activeTab === 'jobs' && (
         <>
           <div className="flex justify-end mb-4">
-            <Link to="/dfpladmin access/jobs/new" className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-80">
-              <Plus size={18} /> Post New Job
-            </Link>
+           <Link to="/admin/jobs/new" className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-80">
+  <Plus size={18} /> Post New Job
+</Link>
           </div>
 
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -138,7 +138,7 @@ const JobsList: React.FC = () => {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Link to={`/dfpladmin access/jobs/edit/${job.id}`} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"><Edit size={20} /></Link>
+                      <Link to={`/admin/jobs/edit/${job.id}`} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"><Edit size={20} /></Link>
                       <button onClick={() => handleDeleteJob(job.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 size={20} /></button>
                     </div>
                   </div>
